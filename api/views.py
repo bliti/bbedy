@@ -1,5 +1,5 @@
 from django.views.decorators.http import require_GET, require_POST
-from django.core.Exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from models import User, Message
 from utils import JsonResponse
 
