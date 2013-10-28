@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from models import User, Message
@@ -18,6 +19,7 @@ def authenticate(request):
             },status=404)
             
 
+@csrf_exempt
 @require_POST
 def messages(request):
     """return messages for given user"""
@@ -26,6 +28,8 @@ def messages(request):
         receiver=request.POST.get('user_token')).values),
         status=200)
 
+
+@csrf_exempt
 @require_POST
 def send(request):
     """send a message"""
