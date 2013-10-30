@@ -1,5 +1,7 @@
 #local settings
 *.DS_Store
+*.db
+
 
 *.py[cod]
 
