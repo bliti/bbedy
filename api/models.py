@@ -13,7 +13,7 @@ class User(models.Model):
 class Message(models.Model):
 
 
-    sender = models.ForeignKey('User')
-    receiver = models.OneToOneField('User', related_name='message_reciever')
+    sender = models.ForeignKey('User', related_name="sender")
+    receiver = models.ForeignKey('User', related_name='receiver')
     body = models.TextField()
     date = models.DateTimeField(auto_now_add=True)

@@ -1,3 +1,5 @@
+#TODO: decorator for authentication.
+
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from django.core.exceptions import ObjectDoesNotExist
@@ -5,50 +7,84 @@ from models import User, Message
 from utils import JsonResponse
 
 
-def authenticate(request):
+def authenticate(user_token, access_token):
     """authenticate an user"""
     try:
         user = User.objects.get(
-            user_token=request.POST.get('user_token'),
-            access_token=request.POST.get('access_token'))
-        pass
+            user_token=user_token,
+            access_token=access_token)
+        return True
         
     except ObjectDoesNotExist:
-        return JsonResponse(content={
-            "Error": "Check user credentials"
-            },status=404)
+        return False
             
 
 @csrf_exempt
 @require_POST
 def messages(request):
     """return messages for given user"""
-    authenticate(request)
-    return JsonResponse(content=list(Message.objects.filter(
-        receiver=request.POST.get('user_token')).values),
-        status=200)
+    
+    if authenticate(
+        user_token=request.POST.get('user_token'),
+        access_token=request.POST.get('access_token')) == True:
+        
+        receiver = User.objects.get(user_token=request.POST.get('user_token'))
+    
+        messages = Message.objects.filter(receiver=receiver)
+    
+        message_list = []
+    
+        if messages is not None:
+        
+            for message in messages:
+                message_list.append(
+                {"body": message.body,
+                "sender": message.sender.user_token,
+                "date": str(message.date)}
+                )
+    
+        return JsonResponse(content={"messages": message_list},status=200)
+        
+    else:
+        return JsonResponse(content={"Error": "User does not exist" },status=404)
+
 
 
 @csrf_exempt
 @require_POST
 def send(request):
     """send a message"""
-    authenticate(request)
     
-    try:
-        receiver = User.objects.get(user_token=request.POST.get('receiver'))
+    if authenticate(
+        user_token=request.POST.get('user_token'),
+        access_token=request.POST.get('access_token')) == True:
     
-    except ObjectsDoesNotExist:
-        return JsonResponse(content={
-            "Error": "Receiving user does not exist"
-            },status=404)
+        try:
+            receiver = User.objects.get(user_token=request.POST.get('receiver'))
+    
+        except ObjectDoesNotExist:
+            return JsonResponse(content={
+                "Error": "Receiving user does not exist"
+                },status=404)
+            
 
-    sender = User.objects.get(user_token=request.POST.get('user_token'))
+        try:
+            sender = User.objects.get(user_token=request.POST.get('user_token'))
     
-    message = Message.objects.create(
-        sender=sender,
-        receiver=receiver,
-        body=request.POST.get('body')
-    )
+        except ObjectDoesNotExist:
+            return JsonResponse(content={
+                "Error": "Sender user does not exist"
+                },status=404)
+
     
-    return JsonResponse(content={"Message": "Sent"},status=200)
+        message = Message.objects.create(
+            sender=sender,
+            receiver=receiver,
+            body=request.POST.get('body')
+        )
+    
+        return JsonResponse(content={"Message": "Sent"},status=200)
+    
+        
+    else:
+        return JsonResponse(content={"Error": "User does not exist" },status=404)
