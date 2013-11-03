@@ -2,8 +2,10 @@
 {% block title %}bbedy{% endblock %}
 {% block content %}
 <br><br><br><br>
+
 <div class="container">
-	<form method="POST" action="/signup/">
+	<h1>Reset user tokens</h1>
+	<form method="POST" action="/reset/">
 		{% csrf_token %}
 		<label>email</label> <input type="email" name="email" required><br><br>
 		<input type="submit" value="Join">

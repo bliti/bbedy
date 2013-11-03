@@ -1,5 +1,10 @@
 # Django settings for bbedy project.
 # for development
+import json
+
+with open('bbedy/local_settings.json', 'r') as f:
+    local_settings = json.loads(f.read())
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -130,6 +135,15 @@ INSTALLED_APPS = (
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+
+
+#send emails from gmail
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = local_settings['gmail_username']
+EMAIL_HOST_PASSWORD = local_settings['gmail_password']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
