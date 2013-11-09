@@ -1,14 +1,38 @@
 {% extends "base.html" %}
 {% block title %}bbedy{% endblock %}
 {% block content %}
-<br><br><br><br>
+
+
+<header>
 <div class="container">
-	<form method="POST" action="/signup/">
-		{% csrf_token %}
-		<label>email</label> <input type="email" name="email" required><br><br>
-		<input type="submit" value="Join">
-	</form>
-	
-	
+	<h1>bbedy <small>Messaging API for embedded devices.</small></h1>
 </div>
+</header>
+
+<section>
+	<div class="container">
+		<div class="intro">
+			<p>bbedy allows your embedded devices (Arduino, Raspberry Pi, Beagle Black) to communicate over the internet. 
+				All through a simple to use protocol. Using standard HTTP calls.</p>
+		
+		</div>
+	</div>
+	
+	
+</section>
+
+
+<!--
+	
+	DO NOT DELETE. :)
+	
+	
+	<form method="POST" action="/signup/">
+	{% csrf_token %}
+	<label>email</label> <input type="email" name="email" required><br><br>
+	<button class="btn" type="submit">Join</button>
+
+</form> --> 
+
+
 {% endblock %}
